@@ -3,6 +3,7 @@ package ch.hearc.ig.zip_favre_casa;
 
 import ch.hearc.ig.zip_favre_casa.entities.Object;
 import ch.hearc.ig.zip_favre_casa.services.ConnectionManager;
+import ch.hearc.ig.zip_favre_casa.services.FlowManager;
 import ch.hearc.ig.zip_favre_casa.services.SearchManager;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -16,15 +17,18 @@ public class Main {
     public static void main(String[] args) {
         ConnectionManager manager = new ConnectionManager();
         SearchManager searchManager = new SearchManager();
+        FlowManager flowManager = new FlowManager();
 
         String token = manager.fetchToken("BNicoud", "123456789");
         try {
             var data = searchManager.search(token);
-            System.out.println(data);
             var objectMapper = new ObjectMapper();
             List<Object> objects = objectMapper.readValue(data, new TypeReference<List<Object>>() {});
+
             for (Object object : objects) {
+                System.out.println("--------------------------------------------------");
                 System.out.println(object);
+                flowManager.validate(object.getObjectID(), token);
             }
         } catch (JsonMappingException e) {
             System.out.println("Error while mapping JSON to object");
