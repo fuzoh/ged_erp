@@ -2,11 +2,15 @@ package ch.hearc.ig.zip_favre_casa;
 
 
 import ch.hearc.ig.zip_favre_casa.services.ConnectionManager;
+import ch.hearc.ig.zip_favre_casa.services.SearchManager;
 
 public class Main {
     public static void main(String[] args) {
         ConnectionManager manager = new ConnectionManager();
-        String token = manager.fetchToken("Mcasagranda", "123456789");
+        SearchManager searchManager = new SearchManager();
+
+        String token = manager.fetchToken("CFavre", "123456789");
+        searchManager.search(token);
         //JSONUtilities.write()..... + passer le token en paramètre
 
         // TODO
