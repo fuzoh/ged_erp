@@ -11,6 +11,11 @@ public class Main {
 
         // TODO
         // Récupérer les quitances depuis la GED -> état validé
+        // Avec une recherche avancée, récupérer les quitances en attente de paiement
+        // {
+        //  "searchPattern": "_etat|l01|Accepter - En attente de paiement|list",
+        //  "contentTypeIDs": "137"
+        // }
         // Passer les quitances récupérées dans l'état en attente de paiement
         // Passer les quitances en attente de paiement dans l'état payé
 
