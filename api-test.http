@@ -1,0 +1,18 @@
+### Get token from api
+GET http://157.26.83.80:2240/token
+Content-Type: application/x-www-form-urlencoded
+Accept: application/json
+
+grant_type=password&username=&password=
+
+
+### Advanced search
+POST http://157.26.83.80:2240/api/search/advanced
+Content-Type: application/json
+Accept: application/json
+Authorization: bearer
+
+{
+    "searchPattern": "_etat|l01|Accepter - En attente de paiement|list",
+    "contentTypeIDs": "137"
+}
