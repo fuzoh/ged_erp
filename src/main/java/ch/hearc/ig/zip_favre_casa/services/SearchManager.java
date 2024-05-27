@@ -8,7 +8,7 @@ public class SearchManager {
 
     public void search(String token) {
         String url = "http://157.26.83.80:2240/api/search/advanced";
-        String requestBody = "{searchPattern: \"_etat|l01|Accepter - En attente de paiement|list\", contentTypeIDs: \"137\"}";
+        String requestBody = "{searchPattern: \"_etat|l01|Accepter|list\", contentTypeIDs: \"139\"}";
 
         try {
             // Ajout de l'en-tête d'autorisation avec le jeton
