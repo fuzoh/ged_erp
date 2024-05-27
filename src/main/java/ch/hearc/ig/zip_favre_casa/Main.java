@@ -9,6 +9,10 @@ public class Main {
         String token = manager.fetchToken("Mcasagranda", "123456789");
         //JSONUtilities.write()..... + passer le token en paramètre
 
+        // TODO
+        // Récupérer les quitances depuis la GED -> état validé
+        // Passer les quitances récupérées dans l'état en attente de paiement
+        // Passer les quitances en attente de paiement dans l'état payé
 
     }
 }
