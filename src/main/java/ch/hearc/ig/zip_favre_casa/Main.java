@@ -1,9 +1,7 @@
 package ch.hearc.ig.zip_favre_casa;
 
 import ch.hearc.ig.zip_favre_casa.entities.Object;
-import ch.hearc.ig.zip_favre_casa.services.ConnectionManager;
-import ch.hearc.ig.zip_favre_casa.services.FlowManager;
-import ch.hearc.ig.zip_favre_casa.services.SearchManager;
+import ch.hearc.ig.zip_favre_casa.services.GEDAPIService;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -14,21 +12,37 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        ConnectionManager manager = new ConnectionManager();
-        SearchManager searchManager = new SearchManager();
-        FlowManager flowManager = new FlowManager();
+        var gedApiService = new GEDAPIService();
 
-        String token = manager.fetchToken("BNicoud", "123456789");
+        String token = gedApiService.fetchToken("BNicoud", "123456789");
         try {
-            var data = searchManager.search(token);
+            // 1. Get all content types 137 un Accepted status
+            var data = gedApiService.searchAcceptedStatus(137);
+            // Parse the JSON response with Jackson and a TypeReference
             var objectMapper = new ObjectMapper();
-            List<Object> objects = objectMapper.readValue(data, new TypeReference<List<Object>>() {});
+            List<Object> objects = objectMapper.readValue(data, new TypeReference<List<Object>>() {
+            });
 
+            // Validates the objects to change their flow step in the GED
             for (Object object : objects) {
-                System.out.println("--------------------------------------------------");
-                System.out.println(object);
-                flowManager.validate(object.getObjectID(), token);
+                System.out.println("Changing flow step for : " + object.getObjectID());
+                var newId = gedApiService.validate(object.getObjectID());
+                // Update the object id
+                object.setObjectID(newId);
+                System.out.println("Object updated, new id : " + object.getObjectID());
             }
+
+            // Make the payments (simulate the ERP that validate payments)
+            // This will be called only after the payment has been done in the ERP
+            for (Object object : objects) {
+                System.out.println(
+                        "The object : " + object.getObjectID() + " has been paid, validating the step in the GED.");
+                var newId = gedApiService.validate(object.getObjectID());
+                // Update the object id
+                object.setObjectID(newId);
+                System.out.println("Object updated, new id for payed object : " + object.getObjectID());
+            }
+
         } catch (JsonMappingException e) {
             System.out.println("Error while mapping JSON to object");
             throw new RuntimeException(e);
@@ -38,22 +52,14 @@ public class Main {
         } catch (IOException e) {
             System.out.println("Error while calling the API");
             throw new RuntimeException(e);
+        } catch (RuntimeException e) {
+            System.out.println(
+                    "An error occurred while processing the data or accessing the API, verify endpoints or credentials");
+            throw new RuntimeException(e);
         } catch (Exception e) {
             System.out.println("Error");
             throw new RuntimeException(e);
         }
-        //JSONUtilities.write()..... + passer le token en paramètre
-
-        // TODO
-        // Récupérer les quitances depuis la GED -> état validé
-        // Avec une recherche avancée, récupérer les quitances en attente de paiement
-        // {
-        //  "searchPattern": "_etat|l01|Accepter - En attente de paiement|list",
-        //  "contentTypeIDs": "137"
-        // }
-
-        // Passer les quitances récupérées dans l'état en attente de paiement
-        // Passer les quitances en attente de paiement dans l'état payé
 
     }
 }
