@@ -1,6 +1,5 @@
 package ch.hearc.ig.zip_favre_casa;
 
-
 import ch.hearc.ig.zip_favre_casa.entities.Object;
 import ch.hearc.ig.zip_favre_casa.services.ConnectionManager;
 import ch.hearc.ig.zip_favre_casa.services.FlowManager;
