@@ -13,11 +13,19 @@ public class GEDAPIService {
 
     private String accessToken;
 
+
+import ch.hearc.ig.zip_favre_casa.services.ConnectionManager;
+import ch.hearc.ig.zip_favre_casa.services.FlowManager;    // GED API endpoints
     private final String API_LOCATION = "http://157.26.83.80:2240";
     private final String TOKEN_API_ENDPOINT = API_LOCATION + "/token";
     private final String ADVANCED_SEARCH_API_ENDPOINT = API_LOCATION + "/api/search/advanced";
     private final String VALIDATE_API_ENDPOINT = API_LOCATION + "/api/flow/validate/";
 
+    /**
+     * @param username The username to authenticate with
+     * @param password User password
+     * @return The raw JSON response from the API containing the token
+     */
     public String fetchToken(String username, String password) {
         Objects.requireNonNull(username);
         Objects.requireNonNull(password);
@@ -35,6 +43,11 @@ public class GEDAPIService {
         }
     }
 
+    /**
+     * Try to parse the access token from the JSON response
+     * @param jsonResponse The JSON response from the token API
+     * @return the token from the JSON response
+     */
     private String parseAccessToken(String jsonResponse) {
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -45,14 +58,18 @@ public class GEDAPIService {
         }
     }
 
-    public String search(String token) {
-        String requestBody = "{searchPattern: \"_etat|l01|Accepter|list\", contentTypeIDs: \"139\"}";
+    /**
+     * @param contentTypeID The ID of the content type to search
+     * @return Raw JSON response from the API
+     */
+    public String searchAcceptedStatus(int contentTypeID) {
+        String requestBody = "{searchPattern: \"_etat|l01|Accepter|list\", contentTypeIDs: \"" + contentTypeID + "\"}";
         try {
             HttpURLConnection connection = JSONUtilities.write(
                     ADVANCED_SEARCH_API_ENDPOINT,
                     POST,
                     requestBody,
-                    token
+                    accessToken
             );
             return JSONUtilities.read(connection);
         } catch (Exception e) {
@@ -60,12 +77,16 @@ public class GEDAPIService {
         }
     }
 
-    public Number validate(Number ObjectID, String token) {
+    /**
+     * @param ObjectID The ID of the object to validate
+     * @return The ID of the new object created after validation
+     */
+    public int validate(Number ObjectID) {
         String url = VALIDATE_API_ENDPOINT + ObjectID;
         try {
             HttpURLConnection connection = JSONUtilities.write(
                     url, POST,
-                    null, token
+                    null, accessToken
             );
             String response = JSONUtilities.read(connection);
             return Integer.parseInt(response);
