@@ -14,9 +14,10 @@ public class Main {
     public static void main(String[] args) {
         try {
             // Authenticate to the GED api
-            var gedApiService = new GEDAPIService("BNicoud", "123456789");
+            var gedApiService = new GEDAPIService("admin.24gc", "a-super-secret-password");
             // 1. Get all content types 137 un Accepted status
-            var data = gedApiService.searchAcceptedStatus(137);
+            // Content type ID must match the required one in the GED
+            var data = gedApiService.searchAcceptedStatus(155);
             // Parse the JSON response with Jackson and a TypeReference
             var objectMapper = new ObjectMapper();
             List<Object> objects = objectMapper.readValue(data, new TypeReference<List<Object>>() {
