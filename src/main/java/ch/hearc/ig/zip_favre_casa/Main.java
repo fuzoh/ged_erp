@@ -12,10 +12,9 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        var gedApiService = new GEDAPIService();
-
-        String token = gedApiService.fetchToken("BNicoud", "123456789");
         try {
+            // Authenticate to the GED api
+            var gedApiService = new GEDAPIService("BNicoud", "123456789");
             // 1. Get all content types 137 un Accepted status
             var data = gedApiService.searchAcceptedStatus(137);
             // Parse the JSON response with Jackson and a TypeReference

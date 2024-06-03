@@ -13,20 +13,22 @@ public class GEDAPIService {
 
     private String accessToken;
 
-
-import ch.hearc.ig.zip_favre_casa.services.ConnectionManager;
-import ch.hearc.ig.zip_favre_casa.services.FlowManager;    // GED API endpoints
+    // GED API endpoints
     private final String API_LOCATION = "http://157.26.83.80:2240";
     private final String TOKEN_API_ENDPOINT = API_LOCATION + "/token";
     private final String ADVANCED_SEARCH_API_ENDPOINT = API_LOCATION + "/api/search/advanced";
     private final String VALIDATE_API_ENDPOINT = API_LOCATION + "/api/flow/validate/";
 
+    public GEDAPIService(String username, String password) {
+        fetchToken(username, password);
+    }
+
     /**
+     * Call the api to get a token
      * @param username The username to authenticate with
      * @param password User password
-     * @return The raw JSON response from the API containing the token
      */
-    public String fetchToken(String username, String password) {
+    public void fetchToken(String username, String password) {
         Objects.requireNonNull(username);
         Objects.requireNonNull(password);
         // Create the request body (form-data)
@@ -37,7 +39,6 @@ import ch.hearc.ig.zip_favre_casa.services.FlowManager;    // GED API endpoints
                     requestBody, null);
             String response = JSONUtilities.read(connection);
             this.accessToken = parseAccessToken(response);
-            return accessToken;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -63,6 +64,7 @@ import ch.hearc.ig.zip_favre_casa.services.FlowManager;    // GED API endpoints
      * @return Raw JSON response from the API
      */
     public String searchAcceptedStatus(int contentTypeID) {
+        Objects.requireNonNull(accessToken);
         String requestBody = "{searchPattern: \"_etat|l01|Accepter|list\", contentTypeIDs: \"" + contentTypeID + "\"}";
         try {
             HttpURLConnection connection = JSONUtilities.write(
@@ -82,6 +84,7 @@ import ch.hearc.ig.zip_favre_casa.services.FlowManager;    // GED API endpoints
      * @return The ID of the new object created after validation
      */
     public int validate(Number ObjectID) {
+        Objects.requireNonNull(accessToken);
         String url = VALIDATE_API_ENDPOINT + ObjectID;
         try {
             HttpURLConnection connection = JSONUtilities.write(
