@@ -14,7 +14,7 @@ public class Main {
     public static void main(String[] args) {
         try {
             // Authenticate to the GED api
-            var gedApiService = new GEDAPIService("admin.24gc", "a-super-secret-password");
+            var gedApiService = new GEDAPIService("admin.24gc", "admin.24gc");
             // 1. Get all content types 137 un Accepted status
             // Content type ID must match the required one in the GED
             var data = gedApiService.searchAcceptedStatus(160);
